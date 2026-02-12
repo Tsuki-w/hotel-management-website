@@ -1,7 +1,10 @@
+"use client";
+
 import { TGuest } from "@/_lib/data-service";
 import { updateProfileAction } from "@/_lib/actions";
 import Image from "next/image";
-import FormButton from "@/_components/FormButton";
+import { useToaster } from "./ToasterProvider";
+import { useActionState, useEffect } from "react";
 
 type IProps = {
   children: React.ReactNode;
@@ -10,10 +13,25 @@ type IProps = {
 
 export default function UpdateProfileForm({ children, guest }: IProps) {
   const { fullName, email, nationalID, countryFlag } = guest;
+  const { success, error } = useToaster();
+  const [state, formAction, isPending] = useActionState(updateProfileAction, {
+    success: "",
+    err: "",
+  });
+
+  useEffect(() => {
+    if (state?.success) {
+      success(state.success);
+    }
+    if (state?.err) {
+      error(state.err);
+    }
+  }, [state, success, error]);
+
   return (
     <form
       className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col"
-      action={updateProfileAction}
+      action={formAction}
     >
       <div className="space-y-2">
         <label>姓名</label>
@@ -59,7 +77,12 @@ export default function UpdateProfileForm({ children, guest }: IProps) {
       </div>
 
       <div className="flex justify-end items-center gap-6">
-        <FormButton />
+        <button
+          className="bg-accent-500 rounded-sm px-6 py-1 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300"
+          disabled={isPending}
+        >
+          {isPending ? "更新中..." : "更新个人信息"}
+        </button>
       </div>
     </form>
   );

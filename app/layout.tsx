@@ -2,6 +2,7 @@ import "@/_styles/global.css";
 import { Josefin_Sans } from "next/font/google";
 import Header from "./_components/Header";
 import ReservationProvider from "./_components/ReservationContext";
+import ToasterProvider from "./_components/ToasterProvider";
 import { Suspense } from "react";
 
 const josefin = Josefin_Sans({
@@ -32,7 +33,9 @@ export default function RootLayout({
         </Suspense>
         <div className="flex-1 px-8 py-12 grid-row-2/3 overflow-y-auto">
           <main className="max-w-7xl mx-auto">
-            <ReservationProvider>{children}</ReservationProvider>
+            <ToasterProvider>
+              <ReservationProvider>{children}</ReservationProvider>
+            </ToasterProvider>
           </main>
         </div>
       </body>

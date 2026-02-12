@@ -19,18 +19,25 @@ export async function signOutAction() {
   await signOut({ redirectTo: "/" });
 }
 
-export async function updateProfileAction(formData: FormData) {
+export async function updateProfileAction(prevState: any, formData: FormData) {
   const session = await auth();
   if (!session) {
-    throw new Error("您必须先登录才能更新您的个人信息");
+    return {
+      err: "您必须先登录才能更新您的个人信息",
+      success: "",
+    };
   }
+  const guestId = Number(session.user?.id);
   const nationalID = formData.get("nationalID")!.toString();
   const [nationality, countryFlag] = formData
     .get("nationality")!
     .toString()
     .split("%");
   if (!/^[a-zA-Z0-9]{6,12}$/.test(nationalID)) {
-    throw new Error("您的国家/地区 ID 必须为 6-12 个字符");
+    return {
+      err: "您的国家/地区 ID 必须为 6-12 个字符",
+      success: "",
+    };
   }
   const updatedGuest = {
     nationalID,
@@ -39,12 +46,19 @@ export async function updateProfileAction(formData: FormData) {
   };
   // console.log(updatedGuest);
   try {
-    await updateGuest(Number(session?.user?.id), updatedGuest);
+    await updateGuest(guestId, updatedGuest);
     // 清除特定路径的服务端数据缓存，并在 Server Action 返回时，立即通知客户端重新获取该路径的最新数据
     revalidatePath("/account/profile");
+    return {
+      err: "",
+      success: "更新成功",
+    };
   } catch (error) {
     console.log(error);
-    throw new Error("Guest could not be updated");
+    return {
+      err: "更新失败",
+      success: "",
+    };
   }
 }
 

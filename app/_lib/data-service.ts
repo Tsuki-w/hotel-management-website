@@ -246,12 +246,12 @@ type TUpdateGuest = {
   countryFlag: string;
 };
 export async function updateGuest(id: number, updatedFields: TUpdateGuest) {
+  // console.log(updatedFields);
   const { data, error } = await supabase
     .from("guests")
     .update(updatedFields)
     .eq("id", id)
-    .select()
-    .single();
+    .select();
 
   if (error) {
     console.error(error);
