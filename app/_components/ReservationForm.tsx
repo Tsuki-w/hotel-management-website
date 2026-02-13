@@ -1,6 +1,6 @@
 "use client";
 
-import type { TCabin } from "@/_lib/data-service";
+import type { TCabin } from "@/_types/cabin";
 import { useReservation } from "@/_components/ReservationContext";
 import Image from "next/image";
 import { differenceInDays } from "date-fns";
@@ -14,7 +14,7 @@ type IProps = {
 };
 
 function ReservationForm({ cabin, user }: IProps) {
-  const { success, error } = useToaster();
+  const { error } = useToaster();
   const { maxCapacity, regularPrice, discount } = cabin;
   const { range, resetRange } = useReservation();
   const startDate = range.from;
@@ -40,14 +40,11 @@ function ReservationForm({ cabin, user }: IProps) {
     },
   );
   useEffect(() => {
-    if (state.success) {
-      resetRange();
-      success(state.success);
-    } else if (state.err) {
+    if (state.err) {
       resetRange();
       error(state.err);
     }
-  }, [state, success, error, resetRange]);
+  }, [state, error, resetRange]);
 
   return (
     <div className="h-full">

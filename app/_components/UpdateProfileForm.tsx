@@ -1,6 +1,6 @@
 "use client";
 
-import { TGuest } from "@/_lib/data-service";
+import type { TGuest } from "@/_types/guest";
 import { updateProfileAction } from "@/_lib/actions";
 import Image from "next/image";
 import { useToaster } from "./ToasterProvider";

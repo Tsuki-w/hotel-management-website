@@ -2,11 +2,11 @@ import { PencilSquareIcon } from "@heroicons/react/24/solid";
 import { format, isPast } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import Image from "next/image";
-import type { TBooking } from "@/_lib/data-service";
+import type { TBookings } from "@/_types/booking";
 import DeleteReservation from "@/_components/DeleteReservation";
 
 type IProps = {
-  booking: TBooking;
+  booking: TBookings;
   onDelete: (bookingId: number) => void;
 };
 

@@ -1,12 +1,12 @@
 "use client";
 
 import ReservationCard from "./ReservationCard";
-import type { TBooking } from "@/_lib/data-service";
+import type { TBookings } from "@/_types/booking";
 import { useOptimistic } from "react";
 import { deleteReservationAction } from "@/_lib/actions";
 
 type IProps = {
-  bookings: TBooking[];
+  bookings: TBookings[];
 };
 
 function ReservationList({ bookings }: IProps) {

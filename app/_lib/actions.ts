@@ -82,18 +82,25 @@ export async function deleteReservationAction(reservationId: number) {
 }
 
 export async function updateReservationAction(
+  prevState: any,
   reservationId: number,
   formData: FormData,
 ) {
   const session = await auth();
   if (!session) {
-    throw new Error("You must be signed in to update a reservation");
+    return {
+      err: "您必须先登录才能修改预订",
+      success: "",
+    };
   }
   try {
     const bookings = await getBookings(Number(session?.user?.id));
     const bookingIds = bookings.map((booking) => booking.id);
     if (!bookingIds.includes(reservationId)) {
-      throw new Error("You are not authorized to update this reservation");
+      return {
+        err: "您没有权限修改此预订",
+        success: "",
+      };
     }
     const updateData = {
       numGuests: Number(formData.get("numGuests")),
@@ -101,10 +108,16 @@ export async function updateReservationAction(
     };
     await updateBooking(reservationId, updateData);
     revalidatePath(`/account/reservation/edit/${reservationId}`);
-    // console.log(formData);
+    return {
+      err: "",
+      success: "修改成功",
+    };
   } catch (error) {
     console.log(error);
-    throw new Error("Reservation could not be updated");
+    return {
+      err: "修改失败",
+      success: "",
+    };
   }
 }
 
@@ -135,6 +148,8 @@ export async function createReservationAction(
   // console.log(reservationData, formData);
   const newReservation = {
     ...reservationData,
+    startDate: reservationData.startDate,
+    endDate: reservationData.endDate,
     guestId: Number(session?.user?.id),
     numGuests: Number(formData.get("numGuests")),
     observations: formData.get("observations")!.toString(),
@@ -148,10 +163,6 @@ export async function createReservationAction(
   try {
     await createBooking(newReservation);
     revalidatePath(`/cabins/${newReservation.cabinId}`);
-    return {
-      err: "",
-      success: "预定成功",
-    };
   } catch (error) {
     console.log(error);
     return {

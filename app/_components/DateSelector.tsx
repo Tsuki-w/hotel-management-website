@@ -3,7 +3,8 @@
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { zhCN } from "date-fns/locale";
-import type { TSetting, TCabin } from "@/_lib/data-service";
+import type { TSetting } from "@/_types/setting";
+import type { TCabin } from "@/_types/cabin";
 import { useReservation } from "./ReservationContext";
 import {
   differenceInDays,

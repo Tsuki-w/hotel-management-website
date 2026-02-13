@@ -1,7 +1,8 @@
 import DateSelector from "@/_components/DateSelector";
 import ReservationForm from "@/_components/ReservationForm";
 import { getBookedDatesByCabinId } from "@/_lib/data-service";
-import type { TCabin, TSetting } from "@/_lib/data-service";
+import type { TSetting } from "@/_types/setting";
+import type { TCabin } from "@/_types/cabin";
 import { auth } from "@/_lib/auth";
 import LoginMessage from "@/_components/LoginMessage";
 
