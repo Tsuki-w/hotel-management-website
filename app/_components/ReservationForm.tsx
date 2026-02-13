@@ -5,7 +5,8 @@ import { useReservation } from "@/_components/ReservationContext";
 import Image from "next/image";
 import { differenceInDays } from "date-fns";
 import { createReservationAction } from "@/_lib/actions";
-import FormButton from "@/_components/FormButton";
+import { useActionState, useEffect } from "react";
+import { useToaster } from "./ToasterProvider";
 
 type IProps = {
   cabin: TCabin;
@@ -13,6 +14,7 @@ type IProps = {
 };
 
 function ReservationForm({ cabin, user }: IProps) {
+  const { success, error } = useToaster();
   const { maxCapacity, regularPrice, discount } = cabin;
   const { range, resetRange } = useReservation();
   const startDate = range.from;
@@ -20,13 +22,32 @@ function ReservationForm({ cabin, user }: IProps) {
   const numNights = differenceInDays(endDate as Date, startDate as Date);
   const cabinPrice = numNights * (regularPrice - discount);
 
-  const reservationnData = {
+  const reservationData = {
     cabinId: cabin.id,
     numNights,
     cabinPrice,
     startDate,
     endDate,
   };
+  // useActionState会自动传入prevState和formData
+  const createReservationWithData = (prevState: any, formData: FormData) =>
+    createReservationAction(prevState, reservationData, formData);
+  const [state, formAction, isPending] = useActionState(
+    createReservationWithData,
+    {
+      success: "",
+      err: "",
+    },
+  );
+  useEffect(() => {
+    if (state.success) {
+      resetRange();
+      success(state.success);
+    } else if (state.err) {
+      resetRange();
+      error(state.err);
+    }
+  }, [state, success, error, resetRange]);
 
   return (
     <div className="h-full">
@@ -46,10 +67,7 @@ function ReservationForm({ cabin, user }: IProps) {
 
       <form
         className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col h-full"
-        action={async (formData) => {
-          await createReservationAction(reservationnData, formData);
-          resetRange();
-        }}
+        action={formAction}
       >
         <div className="space-y-2">
           <label htmlFor="numGuests">入住人数</label>
@@ -82,7 +100,14 @@ function ReservationForm({ cabin, user }: IProps) {
 
         <div className="flex justify-end items-center gap-6">
           <p className="text-primary-300 text-base">请选择入住日期</p>
-          <FormButton text={"预定"} />
+          {
+            <button
+              className="bg-accent-500 rounded-sm px-6 py-1 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300"
+              disabled={isPending}
+            >
+              预定
+            </button>
+          }
         </div>
       </form>
     </div>

@@ -109,6 +109,7 @@ export async function updateReservationAction(
 }
 
 export async function createReservationAction(
+  prevState: any,
   reservationData: {
     cabinId: number;
     numNights: number;
@@ -120,7 +121,16 @@ export async function createReservationAction(
 ) {
   const session = await auth();
   if (!session) {
-    throw new Error("You must be signed in to create a reservation");
+    return {
+      err: "您必须先登录才能预定",
+      success: "",
+    };
+  }
+  if (!reservationData.startDate || !reservationData.endDate) {
+    return {
+      err: "您必须选择开始日期和结束日期",
+      success: "",
+    };
   }
   // console.log(reservationData, formData);
   const newReservation = {
@@ -138,9 +148,16 @@ export async function createReservationAction(
   try {
     await createBooking(newReservation);
     revalidatePath(`/cabins/${newReservation.cabinId}`);
+    return {
+      err: "",
+      success: "预定成功",
+    };
   } catch (error) {
     console.log(error);
-    throw new Error("Booking could not be created");
+    return {
+      err: "预定失败",
+      success: "",
+    };
   }
   redirect("/thankyou");
 }

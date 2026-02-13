@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useCallback } from "react";
 
 type TReservationRange = {
   from: Date | undefined;
@@ -30,9 +30,9 @@ export default function ReservationProvider({
   children: React.ReactNode;
 }) {
   const [range, setRange] = useState<TReservationRange>(initialState);
-  const resetRange = () => {
+  const resetRange = useCallback(() => {
     setRange(initialState);
-  };
+  }, []);
   return (
     <ReservationContext.Provider value={{ range, setRange, resetRange }}>
       {children}
