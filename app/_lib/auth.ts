@@ -6,11 +6,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [GitHub],
   pages: {
     signIn: "/login",
+    error: "/login", // 覆盖错误路由
   },
   callbacks: {
     // 触发登录时执行
     // NextAuth会将github登录返回的数据映射成一个标准对象自动注入回调参数
     async signIn({ user }) {
+      // return false;
       try {
         const existingGuest = await getGuest(user.email || "");
         // 如果没有该用户会后台创建一个
@@ -34,7 +36,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
         return session;
       } catch {
-        return session;
+        return session; // 如果 getGuest （数据库查询）失败了，代码会捕获异常并返回一个没有id的session
       }
     },
   },

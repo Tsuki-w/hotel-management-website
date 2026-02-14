@@ -11,7 +11,9 @@ export default async function Page() {
         alt="群山与森林中的两间木屋"
         className="object-cover object-top"
       />
-      <h1 className="relative text-5xl font-bold text-center">欢迎来到 云栖</h1>
+      <h1 className="relative text-5xl font-bold text-center text-accent-400">
+        欢迎来到云栖
+      </h1>
     </main>
   );
 }

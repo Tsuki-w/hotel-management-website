@@ -24,7 +24,7 @@ export default async function Reservation({ cabin, settings }: IProps) {
       {session?.user ? (
         <ReservationForm cabin={cabin} user={session?.user} />
       ) : (
-        <LoginMessage />
+        <LoginMessage cabinId={cabin.id} />
       )}
     </div>
   );

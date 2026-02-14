@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { auth } from "@/_lib/auth";
 import Image from "next/image";
+import { NavLink } from "./NavLink";
 
 export default async function Navigation() {
   const session = await auth();
@@ -8,27 +8,17 @@ export default async function Navigation() {
     <nav className="z-10 text-xl">
       <ul className="flex gap-16 items-center">
         <li>
-          <Link
-            href="/cabins"
-            className="hover:text-accent-400 transition-colors font-bold"
-          >
-            房间
-          </Link>
+          <NavLink href="/">首页</NavLink>
         </li>
         <li>
-          <Link
-            href="/about"
-            className="hover:text-accent-400 transition-colors font-bold"
-          >
-            介绍
-          </Link>
+          <NavLink href="/cabins">房间</NavLink>
+        </li>
+        <li>
+          <NavLink href="/about">介绍</NavLink>
         </li>
         <li>
           {session?.user?.image ? (
-            <Link
-              href="/account"
-              className="hover:text-accent-400 transition-colors"
-            >
+            <NavLink href="/account">
               <div className="flex items-center gap-x-3">
                 <span className="mr-2 font-bold">个人中心</span>
                 <Image
@@ -39,14 +29,9 @@ export default async function Navigation() {
                   height={32}
                 />
               </div>
-            </Link>
+            </NavLink>
           ) : (
-            <Link
-              href="/account"
-              className="hover:text-accent-400 transition-colors font-bold"
-            >
-              个人中心
-            </Link>
+            <NavLink href="/account">个人中心</NavLink>
           )}
         </li>
       </ul>

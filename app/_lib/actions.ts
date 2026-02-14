@@ -11,8 +11,27 @@ import {
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export async function signInAction(callbackUrl: string) {
-  await signIn("github", { redirectTo: callbackUrl || "/" });
+export async function signInAction(
+  prevState: any,
+  formData: FormData,
+  callbackUrl: string,
+) {
+  try {
+    await signIn("github", { redirectTo: callbackUrl || "/" }); // 自动识别相对路径然后拼接为绝对路径进行跳转
+    return {
+      err: "",
+      success: "登录成功",
+    };
+  } catch (error: any) {
+    if (error.message === "NEXT_REDIRECT") {
+      throw error;
+    } else {
+      return {
+        success: "",
+        err: "登录失败",
+      };
+    }
+  }
 }
 
 export async function signOutAction() {
@@ -65,19 +84,19 @@ export async function updateProfileAction(prevState: any, formData: FormData) {
 export async function deleteReservationAction(reservationId: number) {
   const session = await auth();
   if (!session) {
-    throw new Error("You must be signed in to delete a reservation");
+    throw new Error("您必须先登录才能删除预订");
   }
   try {
     const bookings = await getBookings(Number(session?.user?.id));
     const bookingIds = bookings.map((booking) => booking.id);
     if (!bookingIds.includes(reservationId)) {
-      throw new Error("You are not authorized to delete this reservation");
+      throw new Error("您没有权限删除此预订");
     }
     await deleteBooking(reservationId);
     revalidatePath("/account/reservation");
   } catch (error) {
     console.log(error);
-    throw new Error("Booking could not be deleted");
+    throw new Error("删除失败");
   }
 }
 

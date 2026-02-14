@@ -15,7 +15,7 @@ export const metadata = {
     template: "%s / 云栖酒店",
     default: "欢迎 / 云栖酒店",
   },
-  description: "云栖酒店 is a cabin resort in the mountains of the Swiss Alps.",
+  description: "云栖酒店是一处栖息于山间的隐逸胜地",
 };
 
 export default function RootLayout({
