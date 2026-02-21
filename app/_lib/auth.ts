@@ -39,5 +39,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return session; // 如果 getGuest （数据库查询）失败了，代码会捕获异常并返回一个没有id的session
       }
     },
+    authorized({ auth, request }) {
+      const { pathname } = request.nextUrl;
+      const isLogged = !!auth?.user?.id; // 强制转为布尔值
+      const isAccountPage = pathname.startsWith("/account");
+      if (isAccountPage) {
+        if (!isLogged) {
+          // 会自动携带用户请求路径作为callbackUrl
+          return false;
+        }
+        return true;
+      }
+      return true;
+    },
   },
 });
