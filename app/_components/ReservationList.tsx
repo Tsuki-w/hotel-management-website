@@ -4,12 +4,14 @@ import ReservationCard from "./ReservationCard";
 import type { TBookings } from "@/_types/booking";
 import { useOptimistic } from "react";
 import { deleteReservationAction } from "@/_lib/actions";
+import { useToaster } from "./ToasterProvider";
 
 type IProps = {
   bookings: TBookings[];
 };
 
 function ReservationList({ bookings }: IProps) {
+  const { error: toastError } = useToaster();
   const [optimisticBookings, optimisticDelete] = useOptimistic(
     bookings,
     (curBookings, bookingId) => {
@@ -18,7 +20,11 @@ function ReservationList({ bookings }: IProps) {
   );
   async function handleDelete(bookingId: number) {
     optimisticDelete(bookingId);
-    await deleteReservationAction(bookingId);
+    try {
+      await deleteReservationAction(bookingId);
+    } catch {
+      toastError("删除失败，请稍后重试");
+    }
   }
   return (
     <ul className="space-y-6">
