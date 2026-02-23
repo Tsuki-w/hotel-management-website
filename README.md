@@ -1,5 +1,7 @@
 这是一个基于Next.js 16、和Tailwind CSS构建的酒店预订系统。允许用户浏览房间、进行预订以及管理他们的个人资料。
 
+🌐 **在线体验**: [https://hotel-management-website-delta.vercel.app/](https://hotel-management-website-delta.vercel.app/)
+
 ## ✨ 功能特性
 
 - **房间探索**：浏览可用的房间列表，查看房间详情。
@@ -26,6 +28,18 @@
 
 - Node.js v20.19.5
 - npm v11.7.0
+
+### 环境变量配置
+
+本项目依赖环境变量进行配置。请在项目根目录创建 `.env` 文件，并参照 `.env.example` 填入相应的值：
+
+需要的环境变量包括：
+
+- `AUTH_GITHUB_ID`: GitHub OAuth Client ID
+- `AUTH_GITHUB_SECRET`: GitHub OAuth Client Secret
+- `AUTH_SECRET`: NextAuth 用于加密 session 的密钥
+- `SUPABASE_URL`: Supabase 项目 URL
+- `SUPABASE_KEY`: Supabase Anon Key
 
 ## 📂 项目结构
 
