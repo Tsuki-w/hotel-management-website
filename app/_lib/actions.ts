@@ -179,7 +179,7 @@ export async function createReservationAction(
     hasBreakfast: false,
     status: "unconfirmed",
   };
-  console.log(newReservation);
+  // console.log(newReservation);
   try {
     await createBooking(newReservation);
     revalidatePath(`/cabins/${newReservation.cabinId}`);

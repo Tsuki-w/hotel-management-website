@@ -1,5 +1,5 @@
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
-import { format, isPast, differenceInDays } from "date-fns";
+import { format, differenceInDays } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import Image from "next/image";
 import type { TBookings } from "@/_types/booking";
