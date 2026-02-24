@@ -18,12 +18,7 @@ export type TBooking = {
 
 export type TBookings = Omit<
   TBooking,
-  | "status"
-  | "hasBreakfast"
-  | "isPaid"
-  | "observations"
-  | "cabinPrice"
-  | "extrasPrice"
+  "hasBreakfast" | "isPaid" | "observations" | "cabinPrice" | "extrasPrice"
 > & {
   cabins: {
     name: string;

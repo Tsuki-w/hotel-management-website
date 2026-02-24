@@ -32,6 +32,7 @@ function ReservationForm({ cabin, user }: IProps) {
   // useActionState会自动传入prevState和formData
   const createReservationWithData = (prevState: any, formData: FormData) =>
     createReservationAction(prevState, reservationData, formData);
+
   const [state, formAction, isPending] = useActionState(
     createReservationWithData,
     {

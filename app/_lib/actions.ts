@@ -167,8 +167,9 @@ export async function createReservationAction(
   // console.log(reservationData, formData);
   const newReservation = {
     ...reservationData,
-    startDate: reservationData.startDate,
-    endDate: reservationData.endDate,
+    // 手动转换为UTC时间避免时区差异导致的问题
+    startDate: new Date(reservationData.startDate.setHours(12, 0, 0, 0)),
+    endDate: new Date(reservationData.endDate.setHours(12, 0, 0, 0)),
     guestId: Number(session?.user?.id),
     numGuests: Number(formData.get("numGuests")),
     observations: formData.get("observations")!.toString(),
@@ -178,7 +179,7 @@ export async function createReservationAction(
     hasBreakfast: false,
     status: "unconfirmed",
   };
-  // console.log(newReservation);
+  console.log(newReservation);
   try {
     await createBooking(newReservation);
     revalidatePath(`/cabins/${newReservation.cabinId}`);

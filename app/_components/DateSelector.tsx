@@ -63,7 +63,8 @@ function DateSelector({ settings, bookedDates, cabin }: IProps) {
         numberOfMonths={1}
         // 禁选过去的日期和已经预定的日期
         disabled={(curDate) =>
-          isPast(curDate) ||
+          // isPast(curDate) ||
+          differenceInDays(new Date(), curDate) > 0 ||
           // 该月所有日期中只要和当前已预订的日期相同则禁用
           bookedDates.some((date) => isSameDay(date, curDate))
         }

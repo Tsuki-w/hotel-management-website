@@ -91,16 +91,16 @@ export async function getBookings(guestId: number): Promise<TBookings[]> {
   const { data, error } = await supabase
     .from("bookings")
     .select(
-      "id, created_at, startDate, endDate, numNights, numGuests, totalPrice, guestId, cabinId, cabins(name, image)",
+      "id, created_at, startDate, endDate, numNights, numGuests, totalPrice, guestId, cabinId, status, cabins(name, image)",
     )
     .eq("guestId", guestId)
-    .order("startDate");
+    .order("startDate", { ascending: false });
 
   if (error) {
     console.error(error);
     throw new Error("加载预订数据失败");
   }
-
+  console.log(data);
   return data.map((booking) => ({
     ...booking,
     cabins: Array.isArray(booking.cabins) ? booking.cabins[0] : booking.cabins,

@@ -1,5 +1,5 @@
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
-import { format, isPast } from "date-fns";
+import { format, isPast, differenceInDays } from "date-fns";
 import { zhCN } from "date-fns/locale";
 import Image from "next/image";
 import type { TBookings } from "@/_types/booking";
@@ -19,6 +19,7 @@ function ReservationCard({ booking, onDelete }: IProps) {
     totalPrice,
     numGuests,
     created_at,
+    status,
     cabins: { name, image },
   } = booking;
 
@@ -38,15 +39,23 @@ function ReservationCard({ booking, onDelete }: IProps) {
           <h3 className="text-xl font-semibold">
             房间 {name} / {numNights}晚
           </h3>
-          {isPast(new Date(startDate)) ? (
+          {status !== "unconfirmed" && (
             <span className="bg-yellow-800 text-yellow-200 h-7 px-3 uppercase text-xs font-bold flex items-center rounded-sm">
               已完成
             </span>
-          ) : (
-            <span className="bg-green-800 text-green-200 h-7 px-3 uppercase text-xs font-bold flex items-center rounded-sm">
-              待确认
-            </span>
           )}
+          {status === "unconfirmed" &&
+            differenceInDays(endDate, new Date()) >= 0 && (
+              <span className="bg-green-800 text-green-200 h-7 px-3 uppercase text-xs font-bold flex items-center rounded-sm">
+                待确认
+              </span>
+            )}
+          {status === "unconfirmed" &&
+            differenceInDays(endDate, new Date()) < 0 && (
+              <span className="bg-red-800 text-red-200 h-7 px-3 uppercase text-xs font-bold flex items-center rounded-sm">
+                已过期
+              </span>
+            )}
         </div>
 
         <p className="text-lg text-primary-300">
@@ -69,18 +78,25 @@ function ReservationCard({ booking, onDelete }: IProps) {
         </div>
       </div>
 
-      {!isPast(startDate) && (
-        <div className="flex flex-col border-l border-primary-800 w-25">
-          <a
-            href={`/account/reservation/edit/${id}`}
-            className="group flex items-center gap-2 uppercase text-xs font-bold text-primary-300 border-b border-primary-800 grow px-3 hover:bg-accent-600 transition-colors hover:text-primary-900"
-          >
-            <PencilSquareIcon className="h-5 w-5 text-primary-600 group-hover:text-primary-800 transition-colors" />
-            <span className="mt-1">编辑</span>
-          </a>
-          <DeleteReservation bookingId={id} onDelete={onDelete} />
-        </div>
-      )}
+      {status === "unconfirmed" &&
+        differenceInDays(endDate, new Date()) >= 0 && (
+          <div className="flex flex-col border-l border-primary-800 w-25">
+            <a
+              href={`/account/reservation/edit/${id}`}
+              className="group flex items-center gap-2 uppercase text-xs font-bold text-primary-300 border-b border-primary-800 grow px-3 hover:bg-accent-600 transition-colors hover:text-primary-900"
+            >
+              <PencilSquareIcon className="h-5 w-5 text-primary-600 group-hover:text-primary-800 transition-colors" />
+              <span className="mt-1">编辑</span>
+            </a>
+            <DeleteReservation bookingId={id} onDelete={onDelete} />
+          </div>
+        )}
+      {status === "unconfirmed" &&
+        differenceInDays(endDate, new Date()) < 0 && (
+          <div className="flex flex-col border-l border-primary-800 w-25">
+            <DeleteReservation bookingId={id} onDelete={onDelete} />
+          </div>
+        )}
     </div>
   );
 }

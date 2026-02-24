@@ -11,7 +11,7 @@ type IProps = {
 };
 
 function ReservationList({ bookings }: IProps) {
-  const { error: toastError } = useToaster();
+  const { error: toastError, success: toastSuccess } = useToaster();
   const [optimisticBookings, optimisticDelete] = useOptimistic(
     bookings,
     (curBookings, bookingId) => {
@@ -22,6 +22,7 @@ function ReservationList({ bookings }: IProps) {
     optimisticDelete(bookingId);
     try {
       await deleteReservationAction(bookingId);
+      toastSuccess("删除成功");
     } catch {
       toastError("删除失败，请稍后重试");
     }
